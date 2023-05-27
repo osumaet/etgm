@@ -8,5 +8,5 @@ Ofcouse it's not most optimal way to do that. But it's funny.
 
 ## Build & Flash
 
-Build with [`TinyGo`](#https://tinygo.org/)   
+Build with [TinyGo](#https://tinygo.org/)   
 Use `tinygo flash` with `-scheduler=tasks` with proper port and target.
