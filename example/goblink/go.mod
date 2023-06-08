@@ -1,3 +1,3 @@
-module github.com/osumaet/etgm/example/goblink
+module goblink
 
 go 1.20

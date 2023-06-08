@@ -13,7 +13,7 @@ const (
 	/* Address increasing mode: automatic address increased */
 	cmdAddressAutoIncrement = 0x40
 	/* Address increasing mode: fixed address */
-	cmdFixedAddress = 0x44
+	CmdFixedAddress = 0x44
 	/* Read key scan data */
 	cmdReadKeyScan = 0x42
 	/* Display off */
@@ -21,15 +21,15 @@ const (
 	/* Display on command. Bits 0-2 may contain brightness value */
 	cmdSetBrightness = 0x88
 	/* Address Setting Command is used to set the address of the display memory. Bits 0-3 used for address value */
-	cmdSetAddress = 0xC0
+	CmdSetAddress = 0xC0
 	/* Max valid address */
-	maxAddress = 0x0F
+	MaxAddress = 0x0F
 	/* MaxBrightness is max brightness value */
 	MaxBrightness = 0x07
 )
 
-// TM1638Device Device wraps the pins of the TM1638.
-type TM1638Device struct {
+// Device Device wraps the pins of the TM1638.
+type Device struct {
 	/* STB - When this pin is "LO" chip accepting transmission */
 	strobe machine.Pin
 	/* CLK - DIO pin reads data at the rising edge and outputs at the falling edge */
@@ -38,30 +38,30 @@ type TM1638Device struct {
 	data machine.Pin
 }
 
-// NewTM1638Device Create new TM1638 device
-func NewTM1638Device(strobe machine.Pin, clock machine.Pin, data machine.Pin) TM1638Device {
-	return TM1638Device{strobe: strobe, clock: clock, data: data}
+// NewDevice Create new TM1638 device
+func NewDevice(strobe machine.Pin, clock machine.Pin, data machine.Pin) Device {
+	return Device{strobe: strobe, clock: clock, data: data}
 }
 
-func (d *TM1638Device) Configure() {
+func (d *Device) Configure() {
 	d.strobe.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	d.clock.Configure(machine.PinConfig{Mode: machine.PinOutput})
 	d.data.Configure(machine.PinConfig{Mode: machine.PinOutput})
 }
 
 // Open connection to IC
-func (d *TM1638Device) Open() {
+func (d *Device) Open() {
 	d.strobe.Low()
 	d.transmissionDelay()
 }
 
 // Close connection to IC
-func (d *TM1638Device) Close() {
+func (d *Device) Close() {
 	d.strobe.High()
 	d.transmissionDelay()
 }
 
-func (d *TM1638Device) SendByte(value uint8) {
+func (d *Device) SendByte(value uint8) {
 	for i := 0; i < 8; i++ {
 		d.clock.Low()
 		d.transmissionDelay()
@@ -89,7 +89,7 @@ Each button connected to one K and KS line of IC.
 |BYTE-4:  |         KS7         |         KS8         |
 |---------|---------------------|---------------------|
 */
-func (d *TM1638Device) ReadKeyboard(buffer *[4]uint8) {
+func (d *Device) ReadKeyboard(buffer *[4]uint8) {
 	d.Open()
 	d.SendByte(cmdReadKeyScan)
 	d.data.Configure(machine.PinConfig{Mode: machine.PinInput})
@@ -113,7 +113,7 @@ func (d *TM1638Device) ReadKeyboard(buffer *[4]uint8) {
 	d.Close()
 }
 
-func (d *TM1638Device) SetDisplayBrightness(value uint8) {
+func (d *Device) SetDisplayBrightness(value uint8) {
 	d.Open()
 	if value == 0 {
 		d.SendByte(cmdZeroBrightness)
@@ -126,19 +126,19 @@ func (d *TM1638Device) SetDisplayBrightness(value uint8) {
 	d.Close()
 }
 
-func (d *TM1638Device) ClearDisplayMemory() {
+func (d *Device) ClearDisplayMemory() {
 	d.Open()
 	d.SendByte(cmdAddressAutoIncrement)
 	d.Close()
 
 	d.Open()
-	d.SendByte(cmdSetAddress)
+	d.SendByte(CmdSetAddress)
 	for i := 0; i < 16; i++ {
 		d.SendByte(0)
 	}
 	d.Close()
 }
 
-func (d *TM1638Device) transmissionDelay() {
+func (d *Device) transmissionDelay() {
 	time.Sleep(time.Microsecond * time.Duration(5))
 }
