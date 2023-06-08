@@ -1,3 +1,3 @@
-module etgm/driver/tm1638
+module github.com/osumaet/etgm/driver
 
 go 1.20
