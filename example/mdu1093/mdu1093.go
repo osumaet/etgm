@@ -1,9 +1,10 @@
 package main
 
 import (
-	"github.com/osumaet/etgm/driver/tm1638"
 	"machine"
 	"time"
+
+	"github.com/osumaet/etgm/driver/tm1638"
 )
 
 func main() {
