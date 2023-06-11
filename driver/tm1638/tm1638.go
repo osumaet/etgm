@@ -38,8 +38,8 @@ type Device struct {
 	data machine.Pin
 }
 
-// NewDevice Create new TM1638 device
-func NewDevice(strobe machine.Pin, clock machine.Pin, data machine.Pin) Device {
+// New Create new TM1638 device
+func New(strobe machine.Pin, clock machine.Pin, data machine.Pin) Device {
 	return Device{strobe: strobe, clock: clock, data: data}
 }
 
